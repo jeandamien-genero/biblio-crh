@@ -3,11 +3,13 @@
 
 """
 Author : Jean-Damien Généro
-Date : 21 janvier 2021
+Date : 28 janvier 2021
 """
 
 import csv
 import os
+import subprocess
+
 
 def open_file(file):
     """
@@ -61,21 +63,10 @@ class Document(File):
         self.language = self.file_object.iterate_over_rows(23)
         self.page = self.file_object.iterate_over_rows(24)
 
-"""    if Signatures != "1":
-        if CoCRH != "" and CoEXT != "":
-            authors = Name + ' and ' + CoCRH + ' and ' + CoEXT
-            # print('{} ##### {} = {}'.format(number, ID, authors))
-        elif CoCRH == "" and CoEXT != "":
-            authors = Name + ' and ' + CoEXT
-            # print('{} ///// {} = {} (+{})'.format(number, ID, authors, CoCRH))
-        elif CoEXT == "" and CoCRH != "":
-            authors = Name + ' and ' + CoCRH
-            # print('{} ::::: {} = {} (+{})'.format(number, ID, authors, CoEXT))
-    else:
-        authors = Name
-        print('{} ----> {} = {} ({}+{})'.format(number, ID, Name, CoCRH, CoEXT))"""
 
-reference = Document('/Users/jdgenero/Desktop/CNRS/biblio-crh/biblio-retro/publications_retrospectives.csv')
+subprocess.call(["mkdir", "./annual-bibliography"])
+subprocess.call(["mkdir", "./retro-biblio"])
+reference = Document('./csv/publications_retrospectives.csv')
 article_ls = []
 book_ls = []
 inproceedings_ls = []
@@ -93,11 +84,20 @@ preface_journal_ls = []
 preface_book_ls = []
 edition_ls = []
 report_ls = []
+trad_ls = []
+new_edition_ls = []
+outil_ls = []
+thesis_ls = []
+art_rapport_ls = []
+compte_rendu_ls = []
+conference_ls = []
 
-number = -1
+sorted_all_date = sorted(set([Date for Date in reference.date]))
+# print(sorted_all_date)
+
+
 for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal, Editor, Booktitle, Preface, Dedicataire, Dict_title, Date, Location, Publisher, Series, Organization, Language, Pages \
         in zip(reference.id, reference.name1, reference.name2, reference.firstname, reference.signatures, reference.coauthorCRH, reference.coauthorEXT, reference.type, reference.title, reference.journal, reference.editor, reference.booktitle, reference.preface, reference.dedicataire, reference.dict_title, reference.date, reference.location, reference.publisher, reference.series, reference.organization, reference.language, reference.page):
-    number += 1
     if Name2 != "":
         Name = Name1.title() + '-' + Name2.title() + ', ' + Firstname
     else:
@@ -118,16 +118,12 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     if Signatures != "1":
         if CoCRH != "" and CoEXT != "":
             authors = Name + ' and ' + CoCRH + ' and ' + CoEXT
-            # print('{} ##### {} = {}'.format(number, ID, authors))
         elif CoCRH == "" and CoEXT != "":
             authors = Name + ' and ' + CoEXT
-            # print('{} ///// {} = {} (+{})'.format(number, ID, authors, CoCRH))
         elif CoEXT == "" and CoCRH != "":
             authors = Name + ' and ' + CoCRH
-            # print('{} ::::: {} = {} (+{})'.format(number, ID, authors, CoEXT))
     else:
         authors = Name
-        # print('{} ----> {} = {} ({}+{})'.format(number, ID, Name, CoCRH, CoEXT))
     if Type == "article dans une revue":
         article = f"""@article{{{Name1}{ID}-{Date},
     author = {{{authors}}},
@@ -135,7 +131,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     journal = {{{Journal}}},
     year = {Date},
     language = {{{Language}}},
-    keywords = {{art-crh}}
+    keywords = {{art-crh, crh-{Date}}}
     }}"""
         article_ls.append(article)
     elif Type == "livre":
@@ -148,7 +144,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     year = {Date},
     pagetotal = {{{Pages}}},
     language = {{{Language}}},
-    keywords = {{book-crh}}
+    keywords = {{book-crh, crh-{Date}}}
     }}"""
         book_ls.append(book)
     elif Type == "article dans des actes de colloque":
@@ -162,7 +158,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     year = {Date},
     pagetotal = {{{Pages}}},
     language = {{{Language}}},
-    keywords = {{inproceedings-crh}}
+    keywords = {{inproceedings-crh, crh-{Date}}}
     }}"""
         inproceedings_ls.append(inproceedings)
     elif Type == "article de dictionnaire":
@@ -177,7 +173,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     year = {Date},
     pagetotal = {{{Pages}}},
     language = {{{Language}}},
-    keywords = {{dict-crh}}
+    keywords = {{dict-crh, crh-{Date}}}
     }}"""
         dict_entry_ls.append(dict_entry)
     elif Type == "direction d'un livre collectif":
@@ -191,7 +187,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     year = {Date},
     pagetotal = {{{Pages}}},
     language = {{{Language}}},
-    keywords = {{proceedings-crh}}
+    keywords = {{proceedings-crh, crh-{Date}}}
     }}"""
         # print(proceedings)
         proceedings_ls.append(proceedings)
@@ -206,7 +202,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     year = {Date},
     pagetotal = {{{Pages}}},
     language = {{{Language}}},
-    keywords = {{expo-crh}}
+    keywords = {{expo-crh, crh-{Date}}}
     }}"""
         exposition_ls.append(exposition)
     elif Type == "contribution dans des Mélanges":
@@ -220,7 +216,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     year = {Date},
     pagetotal = {{{Pages}}},
     language = {{{Language}}},
-    keywords = {{melanges-crh}}
+    keywords = {{melanges-crh, crh-{Date}}}
     }}"""
         # addendum = {{{Dedicataire}}},
         melanges_ls.append(melanges)
@@ -235,7 +231,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     year = {Date},
     pagetotal = {{{Pages}}},
     language = {{{Language}}},
-    keywords = {{collectif-crh}}
+    keywords = {{collectif-crh, crh-{Date}}}
     }}"""
         art_in_collectif_ls.append(art_in_collectif)
     elif Type == "introduction":  # introduction, présentation, conclusion
@@ -246,7 +242,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     journal = {{{Journal}}},
     year = {Date},
     language = {{{Language}}},
-    keywords = {{intro-journal-crh}}
+    keywords = {{intro-journal-crh, crh-{Date}}}
     }}"""
             intro_journal_ls.append(intro_journal)
         elif Journal == "" and Booktitle != "" and Preface == "":
@@ -260,7 +256,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     year = {Date},
     pagetotal = {{{Pages}}},
     language = {{{Language}}},
-    keywords = {{intro-book-crh}}
+    keywords = {{intro-book-crh, crh-{Date}}}
     }}"""
             intro_book_ls.append(intro_book)
         elif Journal == "" and Booktitle == "" and Preface != "":
@@ -274,7 +270,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     year = {Date},
     pagetotal = {{{Pages}}},
     language = {{{Language}}},
-    keywords = {{intro-preface-crh}}
+    keywords = {{intro-preface-crh, crh-{Date}}}
     }}"""
             intro_preface_ls.append(intro_preface)
         else:
@@ -286,7 +282,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     issuetitle = {{{Preface}}},
     year = {Date},
     language = {{{Language}}},
-    keywords = {{intro-journal-crh}}
+    keywords = {{intro-journal-crh, crh-{Date}}}
     }}"""
             intro_journal_ls.append(intro_journal)
     elif Type == "préface":  # préface, postface, éditorial
@@ -298,7 +294,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     issuetitle = {{{Preface}}},
     year = {Date},
     language = {{{Language}}},
-    keywords = {{preface-journal-crh}}
+    keywords = {{preface-journal-crh, crh-{Date}}}
     }}"""
             preface_journal_ls.append(preface_journal)
         elif Journal == "" and Preface != "" and Booktitle == "":
@@ -312,7 +308,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     year = {Date},
     pagetotal = {{{Pages}}},
     language = {{{Language}}},
-    keywords = {{preface-book-crh}}
+    keywords = {{preface-book-crh, crh-{Date}}}
     }}"""
             preface_book_ls.append(preface_book)
         elif Journal == "" and Preface == "" and Booktitle != "":
@@ -326,7 +322,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     year = {Date},
     pagetotal = {{{Pages}}},
     language = {{{Language}}},
-    keywords = {{preface-book-crh}}
+    keywords = {{preface-book-crh, crh-{Date}}}
     }}"""
             preface_book_ls.append(preface_book)
         else:
@@ -343,7 +339,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     pagetotal = {{{Pages}}},
     language = {{{Language}}},
     % addendum = {{{Title}}},
-    keywords = {{edition-txt-crh}}
+    keywords = {{edition-txt-crh, crh-{Date}}}
     }}"""
             edition_ls.append(edition)
         else:
@@ -356,7 +352,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     year = {Date},
     pagetotal = {{{Pages}}},
     language = {{{Language}}},
-    keywords = {{edition-txt-crh}}
+    keywords = {{edition-txt-crh, crh-{Date}}}
     }}"""
             edition_ls.append(edition)
     elif Type == "rapport":
@@ -369,22 +365,165 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     year = {Date},
     pagetotal = {{{Pages}}},
     language = {{{Language}}},
-    keywords = {{report-crh}}
+    keywords = {{report-crh, crh-{Date}}}
     }}"""
         report_ls.append(report)
+    elif Type == "traduction":
+        trad = f"""@book{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    title = {{{Title}}},
+    publisher = {{{Publisher}}},
+    series = {{{Series}}},
+    location = {{{Location}}},
+    year = {Date},
+    pagetotal = {{{Pages}}},
+    language = {{{Language}}},
+    keywords = {{traduction-crh, crh-{Date}}}
+    }}"""
+        trad_ls.append(trad)
+    elif Type == "réédition d'un livre":
+        new_ed = f"""@book{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    editor = {{{Editor}}},
+    title = {{{Title}}},
+    publisher = {{{Publisher}}},
+    series = {{{Series}}},
+    location = {{{Location}}},
+    year = {Date},
+    pagetotal = {{{Pages}}},
+    language = {{{Language}}},
+    addendum = {{réédition}},
+    keywords = {{reedition-crh, crh-{Date}}}
+    }}"""
+        new_edition_ls.append(new_ed)
+    elif Type == "outil pour la recherche":
+        if Booktitle != "" :
+            outil = f"""@incollection{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    editor = {{{Editor}}},
+    title = {{{Title}}},
+    booktitle = {{{Booktitle}}},
+    publisher = {{{Publisher}}},
+    series = {{{Series}}},
+    location = {{{Location}}},
+    year = {Date},
+    pagetotal = {{{Pages}}},
+    language = {{{Language}}},
+    keywords = {{outil-recherche-crh, crh-{Date}}}
+    }}"""
+            outil_ls.append(outil)
+        else:
+            outil = f"""@book{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    editor = {{{Editor}}},
+    title = {{{Title}}},
+    publisher = {{{Publisher}}},
+    series = {{{Series}}},
+    location = {{{Location}}},
+    year = {Date},
+    pagetotal = {{{Pages}}},
+    language = {{{Language}}},
+    keywords = {{outil-recherche-crh, crh-{Date}}}
+    }}"""
+            outil_ls.append(outil)
+    elif Type == "thèse":
+        thesis = f"""@thesis{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    title = {{{Title}}},
+    institution = {{{Publisher}}},
+    location = {{{Location}}},
+    year = {Date},
+    pagetotal = {{{Pages}}},
+    language = {{{Language}}},
+    keywords = {{theses-crh, crh-{Date}}}
+    }}"""
+        thesis_ls.append(thesis)
+    elif Type == "article dans un rapport":
+        if Booktitle != "" and Journal == "":
+            art_rapport = f"""@incollection{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    editor = {{{Editor}}},
+    title = {{{Title}}},
+    booktitle = {{{Booktitle}}},
+    publisher = {{{Publisher}}},
+    series = {{{Series}}},
+    location = {{{Location}}},
+    year = {Date},
+    pagetotal = {{{Pages}}},
+    language = {{{Language}}},
+    keywords = {{art-rapport-crh, crh-{Date}}}
+    }}"""
+            art_rapport_ls.append(art_rapport)
+        elif Booktitle == "" and Journal != "":
+            art_rapport = f"""@article{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    title = {{{Title}}},
+    journal = {{{Journal}}},
+    year = {Date},
+    language = {{{Language}}},
+    keywords = {{art-rapport-crh, crh-{Date}}}
+    }}"""
+            art_rapport_ls.append(art_rapport)
+            # un rapport non pris en compte = l'id #1901
+    elif Type == "compte-rendu":
+        if Journal != "":
+            compte_rendu = f"""@article{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    title = {{{Title}}},
+    journal = {{{Journal}}},
+    year = {Date},
+    language = {{{Language}}},
+    keywords = {{cr-crh, crh-{Date}}}
+    }}"""
+            compte_rendu_ls.append(compte_rendu)
+        else :
+            compte_rendu = f"""@misc{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    title = {{{Title}}},
+    year = {Date},
+    language = {{{Language}}},
+    addendum = {{compte-rendu}},
+    keywords = {{cr-crh, crh-{Date}}}
+    }}"""
+            compte_rendu_ls.append(compte_rendu)
+    elif Type == "conférence":
+        conference = f"""@misc{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    title = {{{Title}}},
+    year = {Date},
+    language = {{{Language}}},
+    keywords = {{conf-crh, crh-{Date}}}
+    }}"""
+        conference_ls.append(conference)
+    else:
+        print(ID, Title)
 
 intro_ls = intro_preface_ls + intro_book_ls + intro_journal_ls
 preface_ls = preface_journal_ls + preface_book_ls
-
-biblio_retro_all = [article_ls, book_ls, inproceedings_ls, dict_entry_ls, proceedings_ls, exposition_ls, melanges_ls, art_in_collectif_ls, intro_ls, preface_ls, edition_ls, report_ls]
-with open('/Users/jdgenero/Desktop/CNRS/biblio-crh/biblio-retro/biblio-retro-all.bib', 'w', encoding='utf-8') as bibfile:
+biblio_retro_all = [article_ls, book_ls, inproceedings_ls, dict_entry_ls, proceedings_ls, exposition_ls, melanges_ls, art_in_collectif_ls, intro_ls, preface_ls, edition_ls, report_ls, trad_ls, new_edition_ls, outil_ls, thesis_ls, art_rapport_ls, compte_rendu_ls, conference_ls]
+with open('./retro-biblio/biblio-retro-all.bib', 'w', encoding='utf-8') as bibfile:
     for ls_biblio in biblio_retro_all:
         for item in ls_biblio:
             bibfile.write('{}\n\n'.format(item))
 
-biblio_names = ["articles_revues", "livres", "articles_actes_colloque", "notices_dictionnaires", "dir_ouvrages_collectifs", "catalogues_exposition", "melanges", "art_ouvrages_collectifs", "intro_presentation_conclusion", "prefaces_postfaces_edito", "editions_textes", "rapports"]
+biblio_names = ["articles_revues", "livres", "articles_actes_colloque", "notices_dictionnaires", "dir_ouvrages_collectifs", "catalogues_exposition", "melanges", "art_ouvrages_collectifs", "intro_presentation_conclusion", "prefaces_postfaces_edito", "editions_textes", "rapports", "traductions", "reeditions", "outils_recherche", "theses", "article_rapport", "compte_rendu", "conferences"]
 dict_ls = {biblio_names[item]: biblio_retro_all[item] for item in range(len(biblio_names))}
 for ls_biblio in dict_ls:
-    with open(os.path.join("/Users/jdgenero/Desktop/biblio-crh/biblio-retro", str(ls_biblio) + ".bib"), 'w', encoding='utf-8') as biblio_file:
+    with open(os.path.join("./retro-biblio/", str(ls_biblio) + ".bib"), 'w', encoding='utf-8') as biblio_file:
         for item in dict_ls[ls_biblio]:
             biblio_file.write('{}\n\n'.format(item))
+
+for year in sorted_all_date:
+    annual_list = []
+    for doc_type in biblio_retro_all:
+        for doc in doc_type:
+            if "year = {}".format(year) in doc:
+                annual_list.append(doc)
+    current_file = os.path.join("./annual-bibliography/", year + "-bibliography" + ".bib")
+    with open(current_file, 'w', encoding="utf-8") as file:
+        for document in annual_list:
+            file.write("{}\n\n".format(document))
+    print("{} ---> Done !".format(os.path.join("./annual-bibliography", year + "-bibliography" + ".bib")))
+
+subprocess.call(["rm", "./annual-bibliography/Date 17-bibliography.bib"])
+print("./annual-bibliography/Date 17-bibliography.bib ---> Deleted")
