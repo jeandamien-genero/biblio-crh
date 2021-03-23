@@ -1,0 +1,147 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+
+% BIBLATEX
+\usepackage[defernumbers=false, backend=biber, sorting=nyt, style=verbose,maxbibnames=99]{biblatex}
+
+% remove language field from all entries
+\AtEveryBibitem{%
+  \clearlist{language}%
+}
+
+% replacing <In:> by <,> (TRUE = @article) or dans (FALSE)
+% source : https://tex.stackexchange.com/questions/10682/suppress-in-biblatex
+% \renewbibmacro{in:}{, dans\intitlepunct{}} % everywhere
+% ifentrytype{entry}{<TRUE>}{<FALSE>}
+\renewbibmacro{in:}{%
+  \ifentrytype{article}{,\space}{\addcomma \space dans\intitlepunct}
+  }
+  
+% replacing the coma between last <author> and <editortype> by a blank space
+\renewcommand{\editortypedelim}{\space}
+
+% adding coma as delimiter between <title> and <byeditor>.
+% source : https://tex.stackexchange.com/questions/261275/how-do-you-change-the-editor-field-in-bibliography-using-biblatex
+\renewbibmacro*{byeditor+others}{%
+  \setunit{,\space}%
+  \ifnameundef{editor}
+    {}
+    {\usebibmacro{byeditor+othersstrg}%
+     \setunit{\addspace}%
+     \printnames[byeditor]{editor}%
+     \clearname{editor}%
+     \newunit}%
+  \usebibmacro{byeditorx}%
+  \usebibmacro{bytranslator+others}%
+  \printunit*{,\newunitpunct}}%
+
+% adding a coma between  <editortype> and <title>
+% source : https://tex.stackexchange.com/questions/552046/biblatex-what-is-the-delimiter-between-author-and-title-in-the-bibliography-for
+\DeclareDelimFormat[bib]{nametitledelim}{,\space}
+
+% customize the dash to be used as a replacement for recurrent authors or editors :
+% \renewcommand{\bibnamedash}{}
+
+\DeclareFieldFormat[book,proceedings]{title}{\textit{#1},}
+\DeclareFieldFormat[*]{series}{Coll. \og #1 \fg,}
+\DeclareFieldFormat[*]{volume}{vol. #1,}
+\DeclareFieldFormat[*]{note}{#1,}
+
+% replacing colon by coma between <location> and <publisher>
+% source https://tex.stackexchange.com/questions/187456/changing-colon-to-comma-after-conference-address-with-biblatex
+\renewbibmacro*{publisher+location+date}{%from standard.bbx
+  \printlist{location}%
+  \iflistundef{publisher}
+    {\setunit*{\addcomma\space}}
+    {\setunit*{\addcomma\space}}%instead of \addcolon\space
+  \printlist{publisher}%
+  \setunit*{\addcomma\space}%
+  \usebibmacro{date}%
+  \newunit}
+
+% CSQUOTES
+\usepackage[autostyle]{csquotes}
+
+% URLs
+\usepackage[colorlinks=true,linkcolor=black,anchorcolor=black,citecolor=black,filecolor=black,menucolor=black,runcolor=black,urlcolor=black]{hyperref}
+\usepackage{url}
+
+% BIB SOURCE
+\addbibresource{./2017/biblio2017.bib}
+
+% Cut URLs in bibliography
+\setcounter{biburllcpenalty}{7000}
+\setcounter{biburlucpenalty}{8000}
+
+% HEADER & FOOTER
+% source : https://tex.stackexchange.com/questions/252411/subsection-name-as-right-header/252415
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0pt} % enlever la règle
+\renewcommand{\sectionmark}[1]{\markboth{#1}{}}
+\fancyhf{}
+\fancyhead[R]{\small{\textit{\thesection . \leftmark}}}
+\cfoot{\thepage}
+
+\title{\textbf{Bibliographie annuelle}}
+\author{Centre de recherches historiques\footnote{\textit{Document établi en mars 2021 par Jean-Damien Généro, ingénieur d'études du CNRS, dans le cadre du collectif Sources et données de la recherche du Centre de recherches historiques ; reprise du fichier initial constitué par Cécile Soudan, ingénieure de recherche du CNRS, sous la supervision de Béatrice Delaurenti, maître de conférence de l'EHESS, et de 
+Thomas Le Roux, chargé de recherche du CNRS, directrice et directeur du CRH.}}}
+\date{1\up{er} janvier -- 31 décembre 2017}
+
+
+\begin{document}
+\renewcommand{\contentsname}{Sommaire}
+\maketitle
+\tableofcontents
+\nocite{*}
+\newpage
+
+\section{Monographies}
+
+\printbibliography[heading=subbibliography,keyword=monographie2017,heading=none]
+
+\section{Direction d'ouvrage et de numéro de revue}
+
+\subsection{Direction d'ouvrage}
+
+\printbibliography[heading=subbibliography,keyword=dirouvrage2017,heading=none]
+
+\subsection{Direction de numéro de revue}
+
+\printbibliography[heading=subbibliography,keyword=dirrevue2017,heading=none]
+
+\section{Éditions}
+
+\printbibliography[heading=subbibliography,keyword=editions2017,heading=none]
+
+\section{Préfaces et postfaces}
+
+\printbibliography[heading=subbibliography,keyword=prefpostface2017,heading=none]
+
+\section{Articles}
+
+\printbibliography[heading=subbibliography,keyword=article2017,heading=none]
+
+\section{Chapitres d'ouvrage collectif}
+
+\printbibliography[heading=subbibliography,keyword=chap2017,heading=none]
+
+\section{Notices de dictionnaire ou d'encyclopédie}
+
+\printbibliography[heading=subbibliography,keyword=artdictencyclo2017,heading=none]
+
+\section{Recensions, compte rendus}
+
+\printbibliography[heading=subbibliography,keyword=compterendu2017,heading=none]
+
+\section[Autres publications scientifiques]{Autres publications scientifiques : bases de données, rapports, blogs, catalogues d'exposition, traductions, etc.}
+
+\printbibliography[heading=subbibliography,keyword=autre2017,heading=none]
+
+\section{Travaux de vulgarisation}
+
+\printbibliography[heading=subbibliography,keyword=vulgarisation2017,heading=none]
+
+\end{document}
