@@ -2,6 +2,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[french]{babel}
+\usepackage{graphicx}
 
 % BIBLATEX
 \usepackage[defernumbers=false, backend=biber, sorting=nyt, style=verbose,maxbibnames=99]{biblatex}
@@ -119,16 +120,96 @@
 \fancyhead[R]{\small{\textit{\thesection . \leftmark}}}
 \cfoot{\thepage}
 
+% BLANK PAGE
+\usepackage{afterpage}
+\newcommand\blankpage{%
+    \null
+    \thispagestyle{empty}%
+    \addtocounter{page}{-1}%
+    \newpage}
+
+% IMAGES (EHESS AND CNRS TITLE PAGE)
+\usepackage{mwe}
+
+% LOGO BIBTEX
+\usepackage{hologo}
+
 \title{\textbf{Bibliographie annuelle}}
 \author{Centre de recherches historiques\footnote{\textit{Document établi en mars 2021 par Jean-Damien Généro, ingénieur d'études du CNRS, dans le cadre du collectif Sources et données de la recherche du Centre de recherches historiques ; reprise du fichier initial constitué par Cécile Soudan, ingénieure de recherche du CNRS, sous la supervision de Béatrice Delaurenti, maître de conférence de l'EHESS, et de 
 Thomas Le Roux, chargé de recherche du CNRS, directrice et directeur du CRH.}}}
 \date{1\up{er} janvier -- 31 décembre 2019}
 
-
 \begin{document}
 \renewcommand{\contentsname}{Sommaire}
-\maketitle
+%\maketitle
+\include{titlepage}
+
+\newpage
+\thispagestyle{empty}
+
+\begin{figure}
+    \centering
+    \includegraphics{img/licence-cc-icon.png}
+    \label{fig:licence}
+\end{figure}
+
+\bigskip
+
+\bigskip
+\begin{center}
+\begin{itshape}
+
+Cette bibliographie a été établie en mars 2021 par Jean-Damien Généro, ingénieur d'études du CNRS, dans le cadre du collectif Sources et données de la recherche du Centre de recherches historiques. Il s'agit d'une reprise du fichier initial constitué par Cécile Soudan, ingénieure de recherche du CNRS, sous la supervision de Béatrice Delaurenti, maître de conférence de l'EHESS, et de Thomas Le Roux, chargé de recherche du CNRS, directrice et directeur du CRH.
+
+\medskip
+
+Le présent document a été compilé avec le langage \LaTeX. Les fichiers \hologo{BibTeX} contenant l'ensemble des données sont également disponibles.
+
+\medskip
+
+Pour toute demande, contacter :\\\url{sources_et_donnees.crh@ehess.fr}.
+
+\end{itshape}
+
+\bigskip
+
+\bigskip
+
+    \textbf{Document placé sous les termes de la licence Creative Commons Attribution - Pas d'Utilisation Commerciale - Pas de Modification 4.0 International}.
+    
+    \bigskip
+    
+    \textbf{(CC BY-NC-ND 4.0)}
+\end{center}
+
+\bigskip
+
+    Vous êtes autorisés à :
+    \begin{itemize}
+        \item \textbf{Partager} --- copier, distribuer et communiquer le matériel par tous moyens et sous tous formats.
+    \end{itemize}
+
+\bigskip
+
+    Selon les conditions suivantes :
+    \begin{itemize}
+        \item \textbf{Attribution} : vous devez créditer l'\oe{}uvre, intégrer un lien vers la licence et indiquer si des modifications ont été effectuées à l'\oe{}uvre. Vous devez indiquer ces informations par tous les moyens raisonnables, sans toutefois suggérer que l'Offrant vous soutient ou soutient la façon dont vous avez utilisé son \oe{}uvre.
+        \item \textbf{Pas d'utilisation commerciale} : vous n'êtes pas autorisé à faire un usage commercial de cette \oe{}uvre, tout ou partie du matériel la composant. 
+        \item \textbf{Pas de modifications} : dans le cas où vous effectuez un remix, que vous transformez, ou créez à partir du matériel composant l'\oe{}uvre originale, vous n'êtes pas autorisé à distribuer ou mettre à disposition l'\oe{}uvre modifiée. 
+    \end{itemize}
+
+\bigskip
+
+L'Offrant ne peut retirer les autorisations concédées par la licence tant que vous appliquez les termes de cette licence.
+
+\bigskip
+
+    Consulter la licence en entier pour plus de détails (\url{https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.fr}). 
+
+\newpage
+\thispagestyle{empty}
 \tableofcontents
+
 \nocite{*}
 \newpage
 
