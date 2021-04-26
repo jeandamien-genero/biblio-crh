@@ -7,3 +7,5 @@ Ce repository contient la bibliographie de l'ensemble des membres du CRH depuis 
 Les fichiers de la période 1966-1997 ont été constitué par Jean-Damien Généro en 2021 à partir du du tableur Excel construit par Cécile Dauphin, Jean-Daniel Gronoff et Raymonde Karp en 1999. 
 
 Les fichiers de la période 1998-2020 sont issus du travail effectué par Cécile Dauphin, Jean-Damien Généro et Francine Filoche en 2021.
+
+Contact : gestion.sourcesetdonnees [at] ehhes [.] fr
