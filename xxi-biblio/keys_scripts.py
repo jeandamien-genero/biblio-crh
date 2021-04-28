@@ -48,7 +48,7 @@ def make_keys() -> None:
         file = reading.read()
         key_name_year = r"@\w+{[a-z]+[0-9]{4}"  # @entry{author2020
         # 1/ removing old keys numbers
-        file = re.sub(r"(" + key_name_year + r")-\d+,", r"\1", file)
+        file = re.sub(r"(" + key_name_year + r")-\d+,", r"\1,", file)
         # 2/ detecting keys
         key_plus_lines = re.findall(r"((" + key_name_year + r")(.+\n.+\n.+))", file)
         print("**** {} KEYS DETECTED ****".format(len(key_plus_lines)))
