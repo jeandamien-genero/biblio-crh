@@ -14,9 +14,6 @@ import re
 def change_keyword() -> None:
     """
     Removing year from keywords.
-    :param path: path to a file
-    :type path: str
-    :return: none
     """
     path = input("Enter path : ")
     with open(path, 'r', encoding='utf-8') as reading:
