@@ -8,9 +8,9 @@ Ce repository contient la bibliographie de l'ensemble des membres du CRH depuis 
 
 ## Fichiers
 
-Les fichiers de la période 1950-1997 (`/quinqua-biblio`) ont été constitués par Jean-Damien Généro en 2021 à partir du du tableur Excel construit par Cécile Dauphin, Jean-Daniel Gronoff et Raymonde Karp en 1999 ([lire leur article à ce sujet](https://doi.org/10.4000/ccrh.3053)). 
+Les fichiers de la période 1950-1997 (`/quinqua-biblio`) ont été constitués par Jean-Damien Généro (CNRS) en 2021 à partir du du tableur Excel construit par Cécile Dauphin (CNRS), Jean-Daniel Gronoff (EHESS) et Raymonde Karp (EHESS) en 1999 ([lire leur article à ce sujet](https://doi.org/10.4000/ccrh.3053)). 
 
-Les fichiers de la période 1998-2020 (`/xxxi-biblio`) sont issus du travail effectué par Jean-Damien Généro (CNRS), Cécile Soudan (CNRS) et Francine Filoche (EHESS) en 2021, membres du groupe de travail "Bibliographie" du collectif "Sources et données de la recherche" du CRH
+Les fichiers de la période 1998-2020 (`/xxxi-biblio`) sont issus du travail effectué par Jean-Damien Généro, Cécile Soudan (CNRS) et Francine Filoche (EHESS) en 2021, membres du groupe de travail "Bibliographie" du collectif "Sources et données de la recherche" du CRH
 
 Supervision : Béatrice Delaurenti et Thomas Le Roux, directeurs du CRH.
 
