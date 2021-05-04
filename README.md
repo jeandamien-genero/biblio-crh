@@ -16,7 +16,7 @@ Supervision : Béatrice Delaurenti et Thomas Le Roux, directeurs du CRH.
 
 ## Licence
 
-L'ensemble des fichiers et données est placé sous les termes de la licence Creative Commons Attribution - Pas d’Utilisation Commerciale - Pas de Modification 4.0 International ([CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr)).
+L'ensemble des fichiers et données est placé sous les termes de la licence Creative Commons Attribution - Pas d’Utilisation Commerciale - Partage dans les Mêmes Conditions 4.0 International ([CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr)).
 
 ## Contact
 
