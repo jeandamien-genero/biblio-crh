@@ -12,7 +12,7 @@ Les fichiers de la période 1950-1997 (`/quinqua-biblio`) ont été constitués 
 
 Les fichiers de la période 1998-2020 (`/xxxi-biblio`) sont issus du travail effectué par Jean-Damien Généro, Cécile Soudan (CNRS) et Francine Filoche (EHESS) en 2021, membres du groupe de travail "Bibliographie" du collectif "Sources et données de la recherche" du CRH
 
-Supervision : Béatrice Delaurenti et Thomas Le Roux, directeurs du CRH.
+Supervision : Béatrice Delaurenti et Thomas Le Roux, directrice et directeur du CRH.
 
 ## Licence
 
