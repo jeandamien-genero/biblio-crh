@@ -20,4 +20,4 @@ L'ensemble des fichiers et données est placé sous les termes de la licence Cre
 
 ## Contact
 
-Contact : gestion.sourcesetdonnees [at] ehhes [.] fr
+Contact : gestion.sourcesetdonnees [at] ehess [.] fr
