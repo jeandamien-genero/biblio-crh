@@ -306,6 +306,36 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{editions, edition-txt-crh, crh-{Date}}}
     }}"""
             edition_ls.append(edition)
+    # PREFACE POSTFAC
+    elif Type == "préface":  # préface, postface, éditorial
+        if Journal != "" and Preface == "" and Booktitle == "":
+            preface_journal = f"""@article{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    title = {{{Title}}},
+    journal = {{{Journal}}},
+    issuetitle = {{{Preface}}},
+    year = {Date},
+    language = {{{Language}}},
+    keywords = {{preface-journal-crh, crh-{Date}}}
+    }}"""
+            preface_journal_ls.append(preface_journal)
+
+    # ENTRÉE DE DICT
+    elif Type == "article de dictionnaire":
+        dict_entry = f"""@inreference{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    editor = {{{Editor}}},
+    title = {{{Title}}},
+    booktitle = {{{Dict_title}}},
+    publisher = {{{Publisher}}},
+    series = {{{Series}}},
+    location = {{{Location}}},
+    year = {Date},
+    pagetotal = {{{Pages}}},
+    language = {{{Language}}},
+    keywords = {{dict-crh, crh-{Date}}}
+}}"""
+        dict_entry_ls.append(dict_entry)
 
 with open(os.path.join("./pdf-retro-bib", "monographies.bib"), 'w', encoding='utf-8') as biblio_file:
     for item in book_ls:
@@ -321,4 +351,7 @@ with open(os.path.join("./pdf-retro-bib", "articles.bib"), 'w', encoding='utf-8'
         biblio_file.write('{}\n'.format(item))
 with open(os.path.join("./pdf-retro-bib", "editions.bib"), 'w', encoding='utf-8') as biblio_file:
     for item in edition_ls:
+        biblio_file.write('{}\n'.format(item))
+with open(os.path.join("./pdf-retro-bib", "dict.bib"), 'w', encoding='utf-8') as biblio_file:
+    for item in dict_entry_ls:
         biblio_file.write('{}\n'.format(item))
