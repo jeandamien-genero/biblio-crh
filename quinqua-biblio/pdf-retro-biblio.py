@@ -82,7 +82,7 @@ intro_journal_ls = []
 preface_ls = []
 preface_journal_ls = []
 preface_book_ls = []
-# edition_ls = []
+edition_ls = []
 report_ls = []
 trad_ls = []
 new_edition_ls = []
@@ -277,6 +277,35 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{dirouvrage, proceedings-crh, crh-{Date}}}
 }}"""
         proceedings_ls.append(proceedings)
+    # EDITIONS
+    elif Type == "édition de texte":
+        if Preface != "":
+            edition = f"""@book{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    title = {{{Preface}}},
+    publisher = {{{Publisher}}},
+    series = {{{Series}}},
+    location = {{{Location}}},
+    year = {Date},
+    pagetotal = {{{Pages}}},
+    language = {{{Language}}},
+    % addendum = {{{Title}}},
+    keywords = {{editions, edition-txt-crh, crh-{Date}}}
+    }}"""
+            edition_ls.append(edition)
+        else:
+            edition = f"""@book{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    title = {{{Title}}},
+    publisher = {{{Publisher}}},
+    series = {{{Series}}},
+    location = {{{Location}}},
+    year = {Date},
+    pagetotal = {{{Pages}}},
+    language = {{{Language}}},
+    keywords = {{editions, edition-txt-crh, crh-{Date}}}
+    }}"""
+            edition_ls.append(edition)
 
 with open(os.path.join("./pdf-retro-bib", "monographies.bib"), 'w', encoding='utf-8') as biblio_file:
     for item in book_ls:
@@ -289,4 +318,7 @@ with open(os.path.join("./pdf-retro-bib", "dirouvrage.bib"), 'w', encoding='utf-
         biblio_file.write('{}\n'.format(item))
 with open(os.path.join("./pdf-retro-bib", "articles.bib"), 'w', encoding='utf-8') as biblio_file:
     for item in article_ls:
+        biblio_file.write('{}\n'.format(item))
+with open(os.path.join("./pdf-retro-bib", "editions.bib"), 'w', encoding='utf-8') as biblio_file:
+    for item in edition_ls:
         biblio_file.write('{}\n'.format(item))
