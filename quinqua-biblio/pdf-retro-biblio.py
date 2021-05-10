@@ -251,7 +251,9 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{article, intro-journal-crh, crh-{Date}}}
 }}"""
             article_ls.append(intro_journal)
-    if Type == "article dans une revue":
+
+    # ARTICLE
+    elif Type == "article dans une revue":
         article = f"""@article{{{Name1}{ID}-{Date},
     author = {{{authors}}},
     title = {{{Title}}},
@@ -277,6 +279,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{dirouvrage, proceedings-crh, crh-{Date}}}
 }}"""
         proceedings_ls.append(proceedings)
+
     # EDITIONS
     elif Type == "édition de texte":
         if Preface != "":
@@ -371,6 +374,29 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
 }}"""
         dict_entry_ls.append(dict_entry)
 
+    # COMTPE RENDU
+    elif Type == "compte-rendu":
+        if Journal != "":
+            compte_rendu = f"""@article{{{Name1}{ID}-{Date},
+        author = {{{authors}}},
+        title = {{{Title}}},
+        journal = {{{Journal}}},
+        year = {Date},
+        language = {{{Language}}},
+        keywords = {{cr-crh, crh-{Date}}}
+        }}"""
+            compte_rendu_ls.append(compte_rendu)
+        else:
+            compte_rendu = f"""@misc{{{Name1}{ID}-{Date},
+        author = {{{authors}}},
+        title = {{{Title}}},
+        year = {Date},
+        language = {{{Language}}},
+        addendum = {{compte-rendu}},
+        keywords = {{cr-crh, crh-{Date}}}
+        }}"""
+            compte_rendu_ls.append(compte_rendu)
+
 preface_ls = preface_journal_ls + preface_book_ls
 
 with open(os.path.join("./pdf-retro-bib", "monographies.bib"), 'w', encoding='utf-8') as biblio_file:
@@ -393,4 +419,7 @@ with open(os.path.join("./pdf-retro-bib", "dict.bib"), 'w', encoding='utf-8') as
         biblio_file.write('{}\n'.format(item))
 with open(os.path.join("./pdf-retro-bib", "prefpostface.bib"), 'w', encoding='utf-8') as biblio_file:
     for item in preface_ls:
+        biblio_file.write('{}\n'.format(item))
+with open(os.path.join("./pdf-retro-bib", "compterendu.bib"), 'w', encoding='utf-8') as biblio_file:
+    for item in compte_rendu_ls:
         biblio_file.write('{}\n'.format(item))
