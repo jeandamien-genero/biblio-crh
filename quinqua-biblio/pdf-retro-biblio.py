@@ -396,6 +396,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{cr-crh, crh-{Date}}}
 }}"""
             compte_rendu_ls.append(compte_rendu)
+
     # TRADUCTIONS
     elif Type == "traduction":
         trad = f"""@book{{{Name1}{ID}-{Date},
@@ -411,7 +412,125 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
 }}"""
         trad_ls.append(trad)
 
+    # AUTRES
+    # AUTRES = CONFÉRENCE
+    elif Type == "conférence":
+        conference = f"""@misc{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    title = {{{Title}}},
+    year = {Date},
+    language = {{{Language}}},
+    keywords = {{autres, conf-crh, crh-{Date}}}
+}}"""
+        conference_ls.append(conference)
+    # AUTRES > THÈSES
+    elif Type == "thèse":
+        thesis = f"""@thesis{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    title = {{{Title}}},
+    institution = {{{Publisher}}},
+    location = {{{Location}}},
+    year = {Date},
+    pagetotal = {{{Pages}}},
+    language = {{{Language}}},
+    keywords = {{autres, theses-crh, crh-{Date}}}
+}}"""
+        thesis_ls.append(thesis)
+    # OUTILS POUR LA RECHERCHES > AUTRES
+    elif Type == "outil pour la recherche":
+        # CHAPITRE
+        if Booktitle != "":
+            outil = f"""@incollection{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    editor = {{{Editor}}},
+    title = {{{Title}}},
+    booktitle = {{{Booktitle}}},
+    publisher = {{{Publisher}}},
+    series = {{{Series}}},
+    location = {{{Location}}},
+    year = {Date},
+    pagetotal = {{{Pages}}},
+    language = {{{Language}}},
+    keywords = {{autres, outil-recherche-crh, crh-{Date}}}
+}}"""
+            outil_ls.append(outil)
+        # MONOGRAPHIES
+        else:
+            outil = f"""@book{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    editor = {{{Editor}}},
+    title = {{{Title}}},
+    publisher = {{{Publisher}}},
+    series = {{{Series}}},
+    location = {{{Location}}},
+    year = {Date},
+    pagetotal = {{{Pages}}},
+    language = {{{Language}}},
+    keywords = {{autres, outil-recherche-crh, crh-{Date}}}
+}}"""
+            outil_ls.append(outil)
+    # AUTRES > RAPPORTS
+    elif Type == "rapport":
+        report = f"""@report{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    title = {{{Title}}},
+    publisher = {{{Publisher}}},
+    institution = {{{Organization}}},
+    location = {{{Location}}},
+    year = {Date},
+    pagetotal = {{{Pages}}},
+    language = {{{Language}}},
+    keywords = {{autres, report-crh, crh-{Date}}}
+}}"""
+        report_ls.append(report)
+    # AUTRES > CATALOGUE D'EXPO
+    elif Type == "catalogue d'exposition":
+        exposition = f"""@collection{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    editor = {{{Editor}}},
+    title = {{{Title}}},
+    booktitle = {{{Booktitle}}},
+    publisher = {{{Publisher}}},
+    location = {{{Location}}},
+    year = {Date},
+    pagetotal = {{{Pages}}},
+    language = {{{Language}}},
+    keywords = {{autres, expo-crh, crh-{Date}}}
+}}"""
+        exposition_ls.append(exposition)
+    # AUTRES > ARTICLES DANS UN RAPPORT > CHAPITRE ET ARTICLE
+    elif Type == "article dans un rapport":
+        if Booktitle != "" and Journal == "":
+            art_rapport = f"""@incollection{{{Name1}{ID}-{Date},
+        author = {{{authors}}},
+        editor = {{{Editor}}},
+        title = {{{Title}}},
+        booktitle = {{{Booktitle}}},
+        publisher = {{{Publisher}}},
+        series = {{{Series}}},
+        location = {{{Location}}},
+        year = {Date},
+        pagetotal = {{{Pages}}},
+        language = {{{Language}}},
+        keywords = {{autres, art-rapport-crh, crh-{Date}}}
+        }}"""
+            art_rapport_ls.append(art_rapport)
+        elif Booktitle == "" and Journal != "":
+            art_rapport = f"""@article{{{Name1}{ID}-{Date},
+        author = {{{authors}}},
+        title = {{{Title}}},
+        journal = {{{Journal}}},
+        year = {Date},
+        language = {{{Language}}},
+        keywords = {{autres, art-rapport-crh, crh-{Date}}}
+        }}"""
+            art_rapport_ls.append(art_rapport)
+            # un rapport non pris en compte = l'id #1901
+    else:
+        print(ID, Title)
+
 preface_ls = preface_journal_ls + preface_book_ls
+autres_ls = exposition_ls + report_ls + outil_ls + thesis_ls + conference_ls + art_rapport_ls
 
 with open(os.path.join("./pdf-retro-bib", "monographies.bib"), 'w', encoding='utf-8') as biblio_file:
     for item in book_ls:
@@ -439,4 +558,7 @@ with open(os.path.join("./pdf-retro-bib", "compterendu.bib"), 'w', encoding='utf
         biblio_file.write('{}\n'.format(item))
 with open(os.path.join("./pdf-retro-bib", "translations.bib"), 'w', encoding='utf-8') as biblio_file:
     for item in trad_ls:
+        biblio_file.write('{}\n'.format(item))
+with open(os.path.join("./pdf-retro-bib", "others.bib"), 'w', encoding='utf-8') as biblio_file:
+    for item in autres_ls:
         biblio_file.write('{}\n'.format(item))
