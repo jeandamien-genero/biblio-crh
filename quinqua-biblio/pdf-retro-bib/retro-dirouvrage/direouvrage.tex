@@ -1,0 +1,396 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{graphicx}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%     BIBLIOGRAPHIE    %%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% BIBLATEX
+\usepackage[autostyle]{csquotes}
+\usepackage[indexing=true,defernumbers=false, backend=biber, sorting=nyt, style=verbose-trad1,maxbibnames=99]{biblatex}
+
+% BIB SOURCE
+% \addbibresource{../../retro-biblio/livres.bib}
+\addbibresource{../dirouvrage.bib}
+
+% remove language field from all entries
+\AtEveryBibitem{%
+  \clearlist{language}%
+}
+
+% adding coma as delimiter between <title> and <byeditor> or <bytranslator>.
+% source : https://tex.stackexchange.com/questions/261275/how-do-you-change-the-editor-field-in-bibliography-using-biblatex
+\renewbibmacro*{byeditor+others}{%
+  \setunit{,\space}%
+  \ifnameundef{editor}
+    {}
+    {\usebibmacro{byeditor+othersstrg}%
+     \setunit{\addspace}%
+     \printnames[byeditor]{editor}%
+     \clearname{editor}%
+     \newunit}%
+  \usebibmacro{byeditorx}%
+  \usebibmacro{bytranslator+others}%
+  \printunit*{,\newunitpunct}}%
+
+% replacing colon by coma between <location> and <publisher>
+% source https://tex.stackexchange.com/questions/187456/changing-colon-to-comma-after-conference-address-with-biblatex
+\renewbibmacro*{publisher+location+date}{%from standard.bbx
+  \printlist{location}%
+  \iflistundef{publisher}
+    {\setunit*{\addcomma\space}}%
+    {\setunit*{\addcomma\space}}%instead of \addcolon\space
+  \printlist{publisher}%
+  \setunit*{\addcomma\space}%
+  \usebibmacro{date}%
+  \newunit}
+
+% inversing editor and booktitle in @incollection
+% source : https://tex.stackexchange.com/questions/528989/biblatex-rearrange-editor-and-book-title-in-incollection-entry
+\DeclareNameAlias{sortname}{family-given}
+\DeclareNameAlias{default}{family-given}
+\DeclareFieldFormat{editortype}{\mkbibparens{#1}}
+\DeclareDelimFormat{editortypedelim}{\addspace}
+\renewcommand*{\labelnamepunct}{\addcomma\addspace}
+\DeclareDelimFormat{innametitledelim}{\labelnamepunct}
+\DeclareNameAlias{ineditor}{default}
+\newbibmacro*{bbx:in:editor}[1]{%
+  \ifboolexpr{
+    test \ifuseeditor
+    and
+    not test {\ifnameundef{editor}}
+  }
+    {\printnames[ineditor]{editor}%
+     \setunit{\printdelim{editortypedelim}}%
+     \usebibmacro{#1}%
+     \clearname{editor}}
+    {}}
+\newbibmacro*{in:editor}{%
+  \usebibmacro{bbx:in:editor}{editorstrg}}
+\newbibmacro*{in:editor+others}{%
+  \usebibmacro{bbx:in:editor}{editor+othersstrg}}
+\usepackage{xpatch}
+\xpatchbibdriver{incollection}
+  {\usebibmacro{maintitle+booktitle}%
+   \newunit\newblock}
+  {\usebibmacro{in:editor+others}%
+   \setunit{\printdelim{innametitledelim}}\newblock
+   \usebibmacro{maintitle+booktitle}%
+   \printunit{\addcomma\space}\newblock}
+  {}{}
+  
+% adding <idem> when author is same as bookauthor (@inbook)
+% source https://tex.stackexchange.com/questions/509871/modify-inbook-citation-when-author-is-same-as-bookauthor
+\renewbibmacro*{bybookauthor}{%
+  \ifnamesequal{author}{bookauthor}
+    {\bibstring[\mkibid]{idem\thefield{gender}}%
+     \printunit{\addcomma\space}}
+    {\printnames{bookauthor}}
+    \printunit{\addcomma\space}}
+ 
+ % replacing dot by comma between booktitle and publisher in @inbook
+% source https://tex.stackexchange.com/questions/180986/biblatex-no-period-after-book-and-collection-titles
+\usepackage{xpatch}
+\xpatchbibdriver{inbook}{\newunit\newblock\usebibmacro{publisher+location+date}}{%
+\setunit{\addcomma\space}\newblock%
+\usebibmacro{publisher+location+date}%
+}{}{}
+ 
+ % replacing <In:> by <,> (TRUE = @article) or dans (FALSE)
+% source : https://tex.stackexchange.com/questions/10682/suppress-in-biblatex
+% \renewbibmacro{in:}{, dans\intitlepunct{}} % everywhere
+% ifentrytype{entry}{<TRUE>}{<FALSE>}
+\renewbibmacro{in:}{%
+  \ifentrytype{article}{,\space}{\addcomma \space dans\intitlepunct}
+  }
+  
+% adding </> before number
+\renewbibmacro*{series+number}{%
+  \printfield{series}%
+  \setunit{/}%
+  \printfield{number}%
+  \setunit*{\addcomma\addspace}%
+  \newunit}
+ 
+
+% adding </> between volume and number in @article
+\renewbibmacro*{volume+number+eid}{%
+  \setunit{\addcomma\addspace\no}%
+  \printfield{volume}%
+  \setunit*{/}%
+  \printfield{number}%
+  \setunit{\bibeidpunct}%
+  \printfield{eid}}
+
+% redifine macro from standard.bbx
+% https://www.ctan.org/tex-archive/macros/latex/contrib/biblatex/latex/bbx
+\renewbibmacro*{maintitle+title}{%
+  \iffieldsequal{maintitle}{title}
+    {\clearfield{maintitle}%
+     \clearfield{mainsubtitle}%
+     \clearfield{maintitleaddon}}
+    {\iffieldundef{maintitle}
+       {}
+       {\usebibmacro{maintitle}%
+        \newunit\newblock
+        \iffieldundef{volume}
+          {}
+          {\printfield{volume}%
+           \printfield{part}%
+           \setunit{\addcolon\space}}}}%
+  \usebibmacro{title}%
+  \printunit{\addcomma\space}% adding comma + space
+  \newunit}
+
+\DeclareFieldFormat[inbook]{bookauthor}{#1\addcomma\addspace}
+\DeclareFieldFormat[inbook]{booktitle}{\textit{#1}} % j'ai enlevé \addcomma\addspace
+
+% adding Coll. + a comma
+\DeclareFieldFormat[*]{series}{Coll. \og #1 \fg\addcomma}
+\DeclareFieldFormat[*]{volume}{\no#1}
+\DeclareFieldFormat[*]{note}{#1,}
+
+% dot replaced by comma
+\renewcommand{\newunitpunct}[0]{\addcomma\addspace}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%    OTHER PACKAGES    %%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% URLs
+\usepackage[colorlinks=true,linkcolor=black,anchorcolor=black,citecolor=black,filecolor=black,menucolor=black,runcolor=black,urlcolor=blue]{hyperref}
+\usepackage{url}
+
+% Cut URLs in bibliography
+\setcounter{biburllcpenalty}{7000}
+\setcounter{biburlucpenalty}{8000}
+
+% HEADER & FOOTER
+% source : https://tex.stackexchange.com/questions/252411/subsection-name-as-right-header/252415
+% \usepackage{fancyhdr}
+% \pagestyle{fancy}
+% \renewcommand{\headrulewidth}{0pt} % enlever la règle
+% \renewcommand{\sectionmark}[1]{\markboth{#1}{}}
+% \fancyhf{}
+% \fancyhead[R]{\small{\textit{\thesection . \leftmark}}}
+% \cfoot{\thepage}
+
+% BLANK PAGE
+\usepackage{afterpage}
+\newcommand\blankpage{%
+    \null
+    \thispagestyle{empty}%
+    \addtocounter{page}{-1}%
+    \newpage}
+
+% IMAGES (EHESS AND CNRS TITLE PAGE)
+\usepackage{mwe}
+
+% LOGO BIBTEX
+\usepackage{hologo}
+
+% SPLIT BIB ALPHABETICALLY
+% source https://tex.stackexchange.com/questions/150068/how-to-split-the-bibliography-alphabetically
+\makeatletter
+\def\ifskipbib{\iftoggle{blx@skipbib}}
+\makeatother
+
+\def\initlist{}
+\forcsvlist{\listadd\initlist}{A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z}
+\forlistloop{\DeclareBibliographyCategory}{\initlist}
+\renewcommand*{\do}[1]{\defbibheading{#1}{\section*{#1}}}
+\dolistloop{\initlist}
+\AtDataInput{\ifskipbib{}{\addtocategory{\thefield{sortinit}}{\thefield{entrykey}}}}
+
+\title{Bibliographie rétrospective du CRH (directions d'ouvrage)}
+\author{Jean-Damien Genero}
+\date{May 2021}
+
+\begin{document}
+	
+\renewcommand{\contentsname}{Sommaire}
+
+%%%%%%%%%%% TITLE %%%%%%%%%%%
+
+\begin{titlepage}
+	\begin{center}
+		
+		\vspace*{1,50cm}
+		
+		\includegraphics[width=4cm]{../../../img/logo_crh_magenta.png}
+		\bigskip
+		\bigskip
+		\bigskip
+		\bigskip
+		
+		\begin{Huge}
+			\textbf{Bibliographie rétrospective}
+			
+			\bigskip
+			
+			\bigskip
+			
+			\textbf{Directions d'ouvrage}
+		\end{Huge}
+		
+		\begin{LARGE}
+			\bigskip
+			
+			\bigskip
+			
+			\textbf{1966 -- 1997}
+			
+			\bigskip
+			
+			\textbf{\emph{Centre de recherches historiques} }\\
+		\end{LARGE}
+		
+		\bigskip
+		
+		\vspace*{2.25cm}
+		
+		\includegraphics[width=2cm]{../../../img/licenseccby-nc-sa4.0.png}
+		
+		\vspace*{3,5cm}
+		
+		\begin{tabular}{cc}
+			\includegraphics[width=2cm]{../../../img/Logo_EHESS_2021_RVB.png} & \includegraphics[width=2cm]{../../../img/cnrslogo.png} \\
+		\end{tabular}
+		
+	\end{center}
+	\afterpage{\blankpage}
+\end{titlepage}
+
+
+%%%%%%%%%%% ABOUT %%%%%%%%%%%
+
+\newpage
+\thispagestyle{empty}
+
+\begin{center}
+	\begin{itshape}
+		
+		Ce document \LaTeX{} présente les ouvrages dirigés par les membres du CRH de 1966 à 1997. Le fichier \hologo{BibTeX} contenant l'ensemble des données est également disponible.
+		
+		\bigskip
+		
+		Sous la supervision de la direction du CRH :
+		
+		Béatrice Delaurenti et Thomas Le Roux.
+		
+		\medskip
+		
+		Tableur originel constitué en 1999 par
+		
+		\medskip
+		
+		Cécile Dauphin (CNRS),
+		
+		Jean-Daniel Gronoff (EHESS),
+		
+		Raymonde Karp (EHESS).
+		
+		\bigskip
+		
+		PDF compilé à partir d'un fichier \hologo{BibTeX}
+		
+		constitué automatiquement par un script Python,
+		
+		dans le cadre du collectif \og Sources et données de la recherche \fg
+		
+		en 2021 :
+		
+		\medskip
+		
+		Jean-Damien Généro (CNRS).
+		
+		\bigskip
+		
+		La bibliographie rétrospective du CRH présente les publications des membres du Centre de recherches historiques. Ce corpus a été constitué à l’occasion d’un colloque organisé pour son cinquantenaire en 1999. Il a été fabriqué à partir des listes de références bibliographiques présentées dans le cadre des rapports d’activité adressés au CNRS entre 1966 et 1997. Chaque référence a été décomposée en différents champs pour identifier les auteurs (homme ou femme, statut au sein de l’EHESS et du CNRS), le genre du texte (livre, livre collectif, article de revue, contribution de colloque, préface, etc.) et les circonstances éditoriales (date, éditeur, lieu de publication…). 
+		
+		\bigskip
+		
+		La bibliographie rétrospective se compose d’un peu plus de 5700 références pour 218 auteurs. Pour la période antérieure à 1966, quelques références ont pu être recueillies mais cette partie reste très lacunaire. Ce corpus est donc susceptible d’être corrigé et complété, les rapports d’activité ayant une finalité administrative autant que scientifique. Il peut être consulté comme une source documentaire pour retrouver une référence bibliographique, la production d’un auteur, ou encore la présence de telle ou telle thématique dans une période donnée. Il peut aussi être appréhendé comme un objet de recherche relevant à la fois de l’histoire de l’édition, de l’histoire scientifique ou de l’histoire des femmes et du genre. C’est un observatoire privilégié pour questionner les modes de production de la recherche et l’identité scientifique d’un centre.
+		
+		\bigskip
+		
+		Référence : Cécile \textsc{Dauphin}, Jean-Daniel \textsc{Gronoff} et Raymonde \textsc{Karpe}, \og La vitrine du Centre de Recherches Historiques : les publications \fg, \textit{Les Cahiers du Centre de Recherches Historiques}, 36, 2005 \href{https://doi.org/10.4000/ccrh.3053}{[en ligne]}.
+		
+		\medskip
+		
+		Pour toute demande, contacter :\\\url{gestion.sourcesetdonnees@ehess.fr}.
+		
+	\end{itshape}
+\end{center}
+
+
+%%%%%%%%%%% LICENSE %%%%%%%%%
+
+\newpage
+\begin{center}
+	\begin{figure}
+		\centering
+		\includegraphics{../../../img/licenseccby-nc-sa4.0.png}
+		\label{fig:licence}
+	\end{figure}
+	
+	\bigskip
+	
+	\section*{\textsc{Licence}}
+	
+	\textbf{Document placé sous les termes de la licence Creative Commons Attribution - Pas d’Utilisation Commerciale - Partage dans les Mêmes Conditions 4.0 International (CC BY-NC-SA 4.0).}
+	
+\end{center}
+
+\medskip
+
+Vous êtes autorisés à :
+
+\begin{itemize}
+	\item \textbf{Partager} --- copier, distribuer et communiquer le matériel par tous moyens et sous tous formats.
+	\item \textbf{Adapter} --- remixer, transformer et créer à partir du matériel.
+\end{itemize}
+
+\bigskip
+
+Selon les conditions suivantes :
+
+\begin{itemize}
+	\item \textbf{Attribution} : vous devez créditer l'\oe{}uvre, intégrer un lien vers la licence et indiquer si des modifications ont été effectuées à l'\oe{}uvre. Vous devez indiquer ces informations par tous les moyens raisonnables, sans toutefois suggérer que l'Offrant vous soutient ou soutient la façon dont vous avez utilisé son \oe{}uvre. 
+	\item \textbf{Pas d'utilisation commerciale} : vous n'êtes pas autorisé à faire un usage commercial de cette \oe{}uvre, tout ou partie du matériel la composant. 
+	\item \textbf{Partage dans les Mêmes Conditions} : dans le cas où vous effectuez un remix, que vous transformez, ou créez à partir du matériel composant l'\oe{}uvre originale, vous devez diffuser l'\oe{}uvre modifiée dans les même conditions, c'est à dire avec la même licence avec laquelle l'\oe{}uvre originale a été diffusée.
+	\item \textbf{Pas de restrictions complémentaires} : vous n'êtes pas autorisé à appliquer des conditions légales ou des mesures techniques qui restreindraient légalement autrui à utiliser l'\oe{}uvre dans les conditions décrites par la licence. 
+\end{itemize}
+
+\bigskip
+
+L'Offrant ne peut retirer les autorisations concédées par la licence tant que vous appliquez les termes de cette licence.
+
+\bigskip
+
+Consulter la licence en entier pour plus de détails (\url{https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr}).
+
+% \newpage
+% \tableofcontents
+
+%%%%%%%%%%% BIBLIO %%%%%%%%%%
+
+\newpage
+
+\nocite{*}
+
+\bigskip
+
+\printbibheading[heading=none]
+\bibbycategory
+
+
+\end{document}
