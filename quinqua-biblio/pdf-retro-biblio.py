@@ -306,19 +306,53 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{editions, edition-txt-crh, crh-{Date}}}
     }}"""
             edition_ls.append(edition)
-    # PREFACE POSTFAC
+
+    # PRÉFACE, POSTFACE, ÉDITO
     elif Type == "préface":  # préface, postface, éditorial
+        # DANS UNE REVUE > ARTICLE
         if Journal != "" and Preface == "" and Booktitle == "":
             preface_journal = f"""@article{{{Name1}{ID}-{Date},
-    author = {{{authors}}},
-    title = {{{Title}}},
-    journal = {{{Journal}}},
-    issuetitle = {{{Preface}}},
-    year = {Date},
-    language = {{{Language}}},
-    keywords = {{preface-journal-crh, crh-{Date}}}
-    }}"""
+        author = {{{authors}}},
+        title = {{{Title}}},
+        journal = {{{Journal}}},
+        issuetitle = {{{Preface}}},
+        year = {Date},
+        language = {{{Language}}},
+        keywords = {{preface, preface-journal-crh, crh-{Date}}}
+        }}"""
             preface_journal_ls.append(preface_journal)
+        # DANS UN OUVRAGE > CHAPITRE
+        elif Journal == "" and Preface != "" and Booktitle == "":
+            preface_book = f"""@incollection{{{Name1}{ID}-{Date},
+        author = {{{authors}}},
+        editor = {{{Editor}}},
+        title = {{{Title}}},
+        booktitle = {{{Preface}}},
+        publisher = {{{Publisher}}},
+        location = {{{Location}}},
+        year = {Date},
+        pagetotal = {{{Pages}}},
+        language = {{{Language}}},
+        keywords = {{preface, preface-book-crh, crh-{Date}}}
+        }}"""
+            preface_book_ls.append(preface_book)
+        # DANS UN OUVRAGE > CHAPITRE
+        elif Journal == "" and Preface == "" and Booktitle != "":
+            preface_book = f"""@incollection{{{Name1}{ID}-{Date},
+        author = {{{authors}}},
+        editor = {{{Editor}}},
+        title = {{{Title}}},
+        booktitle = {{{Booktitle}}},
+        publisher = {{{Publisher}}},
+        location = {{{Location}}},
+        year = {Date},
+        pagetotal = {{{Pages}}},
+        language = {{{Language}}},
+        keywords = {{preface, preface-book-crh, crh-{Date}}}
+        }}"""
+            preface_book_ls.append(preface_book)
+        else:
+            print("Error for Preface in {}".format(ID))
 
     # ENTRÉE DE DICT
     elif Type == "article de dictionnaire":
@@ -337,6 +371,8 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
 }}"""
         dict_entry_ls.append(dict_entry)
 
+preface_ls = preface_journal_ls + preface_book_ls
+
 with open(os.path.join("./pdf-retro-bib", "monographies.bib"), 'w', encoding='utf-8') as biblio_file:
     for item in book_ls:
         biblio_file.write('{}\n'.format(item))
@@ -354,4 +390,7 @@ with open(os.path.join("./pdf-retro-bib", "editions.bib"), 'w', encoding='utf-8'
         biblio_file.write('{}\n'.format(item))
 with open(os.path.join("./pdf-retro-bib", "dict.bib"), 'w', encoding='utf-8') as biblio_file:
     for item in dict_entry_ls:
+        biblio_file.write('{}\n'.format(item))
+with open(os.path.join("./pdf-retro-bib", "prefpostface.bib"), 'w', encoding='utf-8') as biblio_file:
+    for item in preface_ls:
         biblio_file.write('{}\n'.format(item))
