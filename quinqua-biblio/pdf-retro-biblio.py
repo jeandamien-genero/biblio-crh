@@ -294,7 +294,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     language = {{{Language}}},
     % addendum = {{{Title}}},
     keywords = {{editions, edition-txt-crh, crh-{Date}}}
-    }}"""
+}}"""
             edition_ls.append(edition)
         else:
             edition = f"""@book{{{Name1}{ID}-{Date},
@@ -307,7 +307,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     pagetotal = {{{Pages}}},
     language = {{{Language}}},
     keywords = {{editions, edition-txt-crh, crh-{Date}}}
-    }}"""
+}}"""
             edition_ls.append(edition)
 
     # PRÉFACE, POSTFACE, ÉDITO
@@ -315,44 +315,44 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
         # DANS UNE REVUE > ARTICLE
         if Journal != "" and Preface == "" and Booktitle == "":
             preface_journal = f"""@article{{{Name1}{ID}-{Date},
-        author = {{{authors}}},
-        title = {{{Title}}},
-        journal = {{{Journal}}},
-        issuetitle = {{{Preface}}},
-        year = {Date},
-        language = {{{Language}}},
-        keywords = {{preface, preface-journal-crh, crh-{Date}}}
-        }}"""
+    author = {{{authors}}},
+    title = {{{Title}}},
+    journal = {{{Journal}}},
+    issuetitle = {{{Preface}}},
+    year = {Date},
+    language = {{{Language}}},
+    keywords = {{preface, preface-journal-crh, crh-{Date}}}
+}}"""
             preface_journal_ls.append(preface_journal)
         # DANS UN OUVRAGE > CHAPITRE
         elif Journal == "" and Preface != "" and Booktitle == "":
             preface_book = f"""@incollection{{{Name1}{ID}-{Date},
-        author = {{{authors}}},
-        editor = {{{Editor}}},
-        title = {{{Title}}},
-        booktitle = {{{Preface}}},
-        publisher = {{{Publisher}}},
-        location = {{{Location}}},
-        year = {Date},
-        pagetotal = {{{Pages}}},
-        language = {{{Language}}},
-        keywords = {{preface, preface-book-crh, crh-{Date}}}
-        }}"""
+    author = {{{authors}}},
+    editor = {{{Editor}}},
+    title = {{{Title}}},
+    booktitle = {{{Preface}}},
+    publisher = {{{Publisher}}},
+    location = {{{Location}}},
+    year = {Date},
+    pagetotal = {{{Pages}}},
+    language = {{{Language}}},
+    keywords = {{preface, preface-book-crh, crh-{Date}}}
+}}"""
             preface_book_ls.append(preface_book)
         # DANS UN OUVRAGE > CHAPITRE
         elif Journal == "" and Preface == "" and Booktitle != "":
             preface_book = f"""@incollection{{{Name1}{ID}-{Date},
-        author = {{{authors}}},
-        editor = {{{Editor}}},
-        title = {{{Title}}},
-        booktitle = {{{Booktitle}}},
-        publisher = {{{Publisher}}},
-        location = {{{Location}}},
-        year = {Date},
-        pagetotal = {{{Pages}}},
-        language = {{{Language}}},
-        keywords = {{preface, preface-book-crh, crh-{Date}}}
-        }}"""
+    author = {{{authors}}},
+    editor = {{{Editor}}},
+    title = {{{Title}}},
+    booktitle = {{{Booktitle}}},
+    publisher = {{{Publisher}}},
+    location = {{{Location}}},
+    year = {Date},
+    pagetotal = {{{Pages}}},
+    language = {{{Language}}},
+    keywords = {{preface, preface-book-crh, crh-{Date}}}
+}}"""
             preface_book_ls.append(preface_book)
         else:
             print("Error for Preface in {}".format(ID))
@@ -378,24 +378,38 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     elif Type == "compte-rendu":
         if Journal != "":
             compte_rendu = f"""@article{{{Name1}{ID}-{Date},
-        author = {{{authors}}},
-        title = {{{Title}}},
-        journal = {{{Journal}}},
-        year = {Date},
-        language = {{{Language}}},
-        keywords = {{cr-crh, crh-{Date}}}
-        }}"""
+    author = {{{authors}}},
+    title = {{{Title}}},
+    journal = {{{Journal}}},
+    year = {Date},
+    language = {{{Language}}},
+    keywords = {{cr-crh, crh-{Date}}}
+}}"""
             compte_rendu_ls.append(compte_rendu)
         else:
             compte_rendu = f"""@misc{{{Name1}{ID}-{Date},
-        author = {{{authors}}},
-        title = {{{Title}}},
-        year = {Date},
-        language = {{{Language}}},
-        addendum = {{compte-rendu}},
-        keywords = {{cr-crh, crh-{Date}}}
-        }}"""
+    author = {{{authors}}},
+    title = {{{Title}}},
+    year = {Date},
+    language = {{{Language}}},
+    addendum = {{compte-rendu}},
+    keywords = {{cr-crh, crh-{Date}}}
+}}"""
             compte_rendu_ls.append(compte_rendu)
+    # TRADUCTIONS
+    elif Type == "traduction":
+        trad = f"""@book{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    title = {{{Title}}},
+    publisher = {{{Publisher}}},
+    series = {{{Series}}},
+    location = {{{Location}}},
+    year = {Date},
+    pagetotal = {{{Pages}}},
+    language = {{{Language}}},
+    keywords = {{traduction-crh, crh-{Date}}}
+}}"""
+        trad_ls.append(trad)
 
 preface_ls = preface_journal_ls + preface_book_ls
 
@@ -422,4 +436,7 @@ with open(os.path.join("./pdf-retro-bib", "prefpostface.bib"), 'w', encoding='ut
         biblio_file.write('{}\n'.format(item))
 with open(os.path.join("./pdf-retro-bib", "compterendu.bib"), 'w', encoding='utf-8') as biblio_file:
     for item in compte_rendu_ls:
+        biblio_file.write('{}\n'.format(item))
+with open(os.path.join("./pdf-retro-bib", "translations.bib"), 'w', encoding='utf-8') as biblio_file:
+    for item in trad_ls:
         biblio_file.write('{}\n'.format(item))
