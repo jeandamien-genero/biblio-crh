@@ -16,7 +16,8 @@
 
 
 % BIB SOURCE
-\addbibresource{../../retro-biblio/livres.bib}
+% \addbibresource{../../retro-biblio/livres.bib}
+\addbibresource{../monographies.bib}
 
 % remove language field from all entries
 \AtEveryBibitem{%
@@ -395,8 +396,15 @@ Consulter la licence en entier pour plus de détails (\url{https://creativecommo
 
 \bigskip
 
-\printbibheading[heading=none]
-\bibbycategory
+% \printbibheading[heading=none]
+% \bibbycategory
 
-%\printbibliography[heading=subbibliography,keyword=book-crh,heading=none]
+\subsection*{Monographies}
+\printbibliography[heading=subbibliography,keyword=book-crh,heading=none]
+
+\newpage
+
+\subsection*{Rééditions}
+\printbibliography[heading=subbibliography,keyword=reedition-crh,heading=none]
+
 \end{document}
