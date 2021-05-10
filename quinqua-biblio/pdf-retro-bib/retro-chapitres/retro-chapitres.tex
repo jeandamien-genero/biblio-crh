@@ -211,10 +211,19 @@
 \AtDataInput{\ifskipbib{}{\addtocategory{\thefield{sortinit}}{\thefield{entrykey}}}}
 
 
-\title{\textbf{Bibliographie annuelle}}
-\author{Centre de recherches historiques\footnote{\textit{Document établi en mars 2021 par Jean-Damien Généro, ingénieur d'études du CNRS, dans le cadre du collectif Sources et données de la recherche du Centre de recherches historiques ; reprise du fichier initial constitué par Cécile Soudan, ingénieure de recherche du CNRS, sous la supervision de Béatrice Delaurenti, maître de conférence de l'EHESS, et de 
-Thomas Le Roux, chargé de recherche du CNRS, directrice et directeur du CRH.}}}
-\date{1\up{er} janvier -- 31 décembre 2018}
+% HEADER & FOOTER
+% source : https://tex.stackexchange.com/questions/252411/subsection-name-as-right-header/252415
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0pt} % enlever la règle
+\renewcommand{\sectionmark}[1]{\markboth{#1}{}}
+\fancyhf{}
+\fancyhead[R]{\small{\textit{\thesection . \leftmark}}}
+\cfoot{\thepage}
+
+\title{Bibliographie rétrospective du CRH (chapitres d'ouvrage)}
+\author{Jean-Damien Genero}
+\date{May 2021}
 
 \begin{document}
 	
