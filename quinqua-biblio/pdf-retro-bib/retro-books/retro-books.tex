@@ -14,7 +14,6 @@
 \usepackage[autostyle]{csquotes}
 \usepackage[indexing=true,defernumbers=false, backend=biber, sorting=nyt, style=verbose-trad1,maxbibnames=99]{biblatex}
 
-
 % BIB SOURCE
 % \addbibresource{../../retro-biblio/livres.bib}
 \addbibresource{../monographies.bib}
@@ -381,8 +380,8 @@ L'Offrant ne peut retirer les autorisations concédées par la licence tant que 
 
 Consulter la licence en entier pour plus de détails (\url{https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr}).
 
-%\newpage
-%\tableofcontents
+\newpage
+\tableofcontents
 
 %%%%%%%%%%% BIBLIO %%%%%%%%%%
 
@@ -390,21 +389,18 @@ Consulter la licence en entier pour plus de détails (\url{https://creativecommo
 
 \nocite{*}
 
-\begin{center}
-	\section*{\textsc{Monographies}}
-\end{center}
-
 \bigskip
 
 % \printbibheading[heading=none]
 % \bibbycategory
 
-\subsection*{Monographies}
+\section{Monographies}
 \printbibliography[heading=subbibliography,keyword=book-crh,heading=none]
 
 \newpage
 
-\subsection*{Rééditions}
+\section{Rééditions}
 \printbibliography[heading=subbibliography,keyword=reedition-crh,heading=none]
+
 
 \end{document}
