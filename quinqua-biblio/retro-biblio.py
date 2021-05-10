@@ -124,6 +124,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
             authors = Name + ' and ' + CoCRH
     else:
         authors = Name
+    # ARTICLES DE REVUE
     if Type == "article dans une revue":
         article = f"""@article{{{Name1}{ID}-{Date},
     author = {{{authors}}},
@@ -134,6 +135,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{art-crh, crh-{Date}}}
     }}"""
         article_ls.append(article)
+    # MONOGRAPHIES
     elif Type == "livre":
         book = f"""@book{{{Name1}{ID}-{Date},
     author = {{{authors}}},
@@ -147,6 +149,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{book-crh, crh-{Date}}}
     }}"""
         book_ls.append(book)
+    # CHAPITRES D'ACTES DE COLLOQUE
     elif Type == "article dans des actes de colloque":
         inproceedings = f"""@inproceedings{{{Name1}{ID}-{Date},
     author = {{{authors}}},
@@ -161,6 +164,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{inproceedings-crh, crh-{Date}}}
     }}"""
         inproceedings_ls.append(inproceedings)
+    # ENTRÉE DE DICT
     elif Type == "article de dictionnaire":
         dict_entry = f"""@inreference{{{Name1}{ID}-{Date},
     author = {{{authors}}},
@@ -176,6 +180,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{dict-crh, crh-{Date}}}
     }}"""
         dict_entry_ls.append(dict_entry)
+    # DIRECTION D'OUVRAGE
     elif Type == "direction d'un livre collectif":
         proceedings = f"""@proceedings{{{Name1}{ID}-{Date},
     editor = {{{authors}}},
@@ -191,6 +196,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     }}"""
         # print(proceedings)
         proceedings_ls.append(proceedings)
+    # CATALOGUE D'EXPO
     elif Type == "catalogue d'exposition":
         exposition = f"""@collection{{{Name1}{ID}-{Date},
     author = {{{authors}}},
@@ -205,6 +211,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{expo-crh, crh-{Date}}}
     }}"""
         exposition_ls.append(exposition)
+    # CHAPITRES DE MELANGES
     elif Type == "contribution dans des Mélanges":
         melanges = f"""@incollection{{{Name1}{ID}-{Date},
     author = {{{authors}}},
@@ -220,6 +227,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     }}"""
         # addendum = {{{Dedicataire}}},
         melanges_ls.append(melanges)
+    # CHAPITRE D'OUVRAGE COLLECTIF
     elif Type == "contribution dans un livre collectif":
         art_in_collectif = f"""@incollection{{{Name1}{ID}-{Date},
     author = {{{authors}}},
@@ -234,7 +242,9 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{collectif-crh, crh-{Date}}}
     }}"""
         art_in_collectif_ls.append(art_in_collectif)
+    # INTRODUCTION, PRÉSENTATION, CONCLUSION
     elif Type == "introduction":  # introduction, présentation, conclusion
+        # DANS UNE REVUE > ARTICLE
         if Journal != "" and Booktitle == "" and Preface == "":
             intro_journal = f"""@article{{{Name1}{ID}-{Date},
     author = {{{authors}}},
@@ -245,6 +255,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{intro-journal-crh, crh-{Date}}}
     }}"""
             intro_journal_ls.append(intro_journal)
+        # DANS UN LIVRE > CHAPITRE
         elif Journal == "" and Booktitle != "" and Preface == "":
             intro_book = f"""@incollection{{{Name1}{ID}-{Date},
     author = {{{authors}}},
@@ -259,6 +270,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{intro-book-crh, crh-{Date}}}
     }}"""
             intro_book_ls.append(intro_book)
+        # DANS UN LIVRE > CHAPITRE
         elif Journal == "" and Booktitle == "" and Preface != "":
             intro_preface = f"""@incollection{{{Name1}{ID}-{Date},
     author = {{{authors}}},
@@ -273,6 +285,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{intro-preface-crh, crh-{Date}}}
     }}"""
             intro_preface_ls.append(intro_preface)
+        # DANS UNE REVUE > ARTICLE
         else:
             # print("error for {}.\nJournal = +{}+\nBooktitle = +{}+\nPreface = +{}+\n\n".format(ID, Journal, Booktitle, Preface))
             intro_journal = f"""@article{{{Name1}{ID}-{Date},
@@ -285,7 +298,9 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{intro-journal-crh, crh-{Date}}}
     }}"""
             intro_journal_ls.append(intro_journal)
+    # PRÉFACE, POSTFACE, ÉDITO
     elif Type == "préface":  # préface, postface, éditorial
+        # DANS UNE REVUE > ARTICLE
         if Journal != "" and Preface == "" and Booktitle == "":
             preface_journal = f"""@article{{{Name1}{ID}-{Date},
     author = {{{authors}}},
@@ -297,6 +312,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{preface-journal-crh, crh-{Date}}}
     }}"""
             preface_journal_ls.append(preface_journal)
+        # DANS UN OUVRAGE > CHAPITRE
         elif Journal == "" and Preface != "" and Booktitle == "":
             preface_book = f"""@incollection{{{Name1}{ID}-{Date},
     author = {{{authors}}},
@@ -311,6 +327,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{preface-book-crh, crh-{Date}}}
     }}"""
             preface_book_ls.append(preface_book)
+        # DANS UN OUVRAGE > CHAPITRE
         elif Journal == "" and Preface == "" and Booktitle != "":
             preface_book = f"""@incollection{{{Name1}{ID}-{Date},
     author = {{{authors}}},
@@ -327,6 +344,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
             preface_book_ls.append(preface_book)
         else:
             print("Error for Preface in {}".format(ID))
+    # ÉDITONS
     elif Type == "édition de texte":
         if Preface != "":
             edition = f"""@book{{{Name1}{ID}-{Date},
@@ -355,6 +373,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{edition-txt-crh, crh-{Date}}}
     }}"""
             edition_ls.append(edition)
+    # RAPPORTS
     elif Type == "rapport":
         report = f"""@report{{{Name1}{ID}-{Date},
     author = {{{authors}}},
@@ -368,6 +387,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{report-crh, crh-{Date}}}
     }}"""
         report_ls.append(report)
+    # TRADUCTIONS
     elif Type == "traduction":
         trad = f"""@book{{{Name1}{ID}-{Date},
     author = {{{authors}}},
@@ -381,6 +401,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{traduction-crh, crh-{Date}}}
     }}"""
         trad_ls.append(trad)
+    # REPRINTS > MONOGRPAHIES
     elif Type == "réédition d'un livre":
         new_ed = f"""@book{{{Name1}{ID}-{Date},
     author = {{{authors}}},
@@ -396,7 +417,9 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{reedition-crh, crh-{Date}}}
     }}"""
         new_edition_ls.append(new_ed)
+    # OUTILS POUR LA RECHERCHES > AUTRES
     elif Type == "outil pour la recherche":
+        # CHAPITRE
         if Booktitle != "" :
             outil = f"""@incollection{{{Name1}{ID}-{Date},
     author = {{{authors}}},
@@ -412,6 +435,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{outil-recherche-crh, crh-{Date}}}
     }}"""
             outil_ls.append(outil)
+        # MONOGRAPHIES
         else:
             outil = f"""@book{{{Name1}{ID}-{Date},
     author = {{{authors}}},
@@ -426,6 +450,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{outil-recherche-crh, crh-{Date}}}
     }}"""
             outil_ls.append(outil)
+    # THÈSES
     elif Type == "thèse":
         thesis = f"""@thesis{{{Name1}{ID}-{Date},
     author = {{{authors}}},
@@ -438,6 +463,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{theses-crh, crh-{Date}}}
     }}"""
         thesis_ls.append(thesis)
+    # ARTICLES DANS UN RAPPORT > CHAPITRE ET ARTICLE
     elif Type == "article dans un rapport":
         if Booktitle != "" and Journal == "":
             art_rapport = f"""@incollection{{{Name1}{ID}-{Date},
@@ -465,6 +491,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     }}"""
             art_rapport_ls.append(art_rapport)
             # un rapport non pris en compte = l'id #1901
+    # COMTPE RENDU
     elif Type == "compte-rendu":
         if Journal != "":
             compte_rendu = f"""@article{{{Name1}{ID}-{Date},
@@ -486,6 +513,7 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{cr-crh, crh-{Date}}}
     }}"""
             compte_rendu_ls.append(compte_rendu)
+    # CONFÉRENCE
     elif Type == "conférence":
         conference = f"""@misc{{{Name1}{ID}-{Date},
     author = {{{authors}}},
