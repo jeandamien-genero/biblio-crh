@@ -91,7 +91,6 @@ thesis_ls = []
 art_rapport_ls = []
 compte_rendu_ls = []
 conference_ls = []
-
 sorted_all_date = sorted(set([Date for Date in reference.date]))
 # print(sorted_all_date)
 
@@ -124,6 +123,8 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
             authors = Name + ' and ' + CoCRH
     else:
         authors = Name
+
+    # MONOGRAPHIES
     if Type == "livre":
         book = f"""@book{{{Name1}{ID}-{Date},
     author = {{{authors}}},
@@ -152,6 +153,8 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{reedition-crh, crh-{Date}}}
 }}"""
         book_ls.append(new_ed)
+
+    # CHAPITRES
     elif Type == "contribution dans un livre collectif":
         art_in_collectif = f"""@incollection{{{Name1}{ID}-{Date},
     author = {{{authors}}},
@@ -180,6 +183,21 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{chap, chapitre, crh-{Date}}}
 }}"""
         chapitre_ls.append(inproceedings)
+    elif Type == "contribution dans des Mélanges":
+        melanges = f"""@incollection{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    editor = {{{Editor}}},
+    title = {{{Title}}},
+    booktitle = {{{Booktitle}}},
+    publisher = {{{Publisher}}},
+    location = {{{Location}}},
+    year = {Date},
+    pagetotal = {{{Pages}}},
+    language = {{{Language}}},
+    keywords = {{chap, melanges-crh, crh-{Date}}}
+}}"""
+        # addendum = {{{Dedicataire}}},
+        chapitre_ls.append(melanges)
     elif Type == "introduction":  # introduction, présentation, conclusion
         if Journal == "" and Booktitle != "" and Preface == "":
             intro_book = f"""@incollection{{{Name1}{ID}-{Date},
@@ -208,6 +226,8 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     language = {{{Language}}},
     keywords = {{chap, intro-preface-crh, crh-{Date}}}
 }}"""
+
+    # ARTICLES
             chapitre_ls.append(intro_preface)
         elif Journal != "" and Booktitle == "" and Preface == "":
             intro_journal = f"""@article{{{Name1}{ID}-{Date},
@@ -216,9 +236,9 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     journal = {{{Journal}}},
     year = {Date},
     language = {{{Language}}},
-    keywords = {{intro-journal-crh, crh-{Date}}}
+    keywords = {{article, intro-journal-crh, crh-{Date}}}
 }}"""
-            intro_journal_ls.append(intro_journal)
+            article_ls.append(intro_journal)
         else:
             # print("error for {}.\nJournal = +{}+\nBooktitle = +{}+\nPreface = +{}+\n\n".format(ID, Journal, Booktitle, Preface))
             intro_journal = f"""@article{{{Name1}{ID}-{Date},
@@ -228,24 +248,35 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     issuetitle = {{{Preface}}},
     year = {Date},
     language = {{{Language}}},
-    keywords = {{intro-journal-crh, crh-{Date}}}
+    keywords = {{article, intro-journal-crh, crh-{Date}}}
 }}"""
-            intro_journal_ls.append(intro_journal)
-    elif Type == "contribution dans des Mélanges":
-        melanges = f"""@incollection{{{Name1}{ID}-{Date},
+            article_ls.append(intro_journal)
+    if Type == "article dans une revue":
+        article = f"""@article{{{Name1}{ID}-{Date},
     author = {{{authors}}},
-    editor = {{{Editor}}},
     title = {{{Title}}},
-    booktitle = {{{Booktitle}}},
+    journal = {{{Journal}}},
+    year = {Date},
+    language = {{{Language}}},
+    keywords = {{article, art-crh, crh-{Date}}}
+ }}"""
+        article_ls.append(article)
+
+    # DIRECTIONS D'OUVRAGE
+    elif Type == "direction d'un livre collectif":
+        proceedings = f"""@proceedings{{{Name1}{ID}-{Date},
+    editor = {{{authors}}},
+    editortype = {{dir.}},
+    title = {{{Title}}},
+    booktitle = {{{Title}}},
     publisher = {{{Publisher}}},
     location = {{{Location}}},
     year = {Date},
     pagetotal = {{{Pages}}},
     language = {{{Language}}},
-    keywords = {{chap, melanges-crh, crh-{Date}}}
+    keywords = {{dirouvrage, proceedings-crh, crh-{Date}}}
 }}"""
-        # addendum = {{{Dedicataire}}},
-        chapitre_ls.append(melanges)
+        proceedings_ls.append(proceedings)
 
 with open(os.path.join("./pdf-retro-bib", "monographies.bib"), 'w', encoding='utf-8') as biblio_file:
     for item in book_ls:
@@ -253,4 +284,9 @@ with open(os.path.join("./pdf-retro-bib", "monographies.bib"), 'w', encoding='ut
 with open(os.path.join("./pdf-retro-bib", "chapitres.bib"), 'w', encoding='utf-8') as biblio_file:
     for item in chapitre_ls:
         biblio_file.write('{}\n'.format(item))
-# recup intro_journal_ls.append(intro_journal) et autre
+with open(os.path.join("./pdf-retro-bib", "dirouvrage.bib"), 'w', encoding='utf-8') as biblio_file:
+    for item in proceedings_ls:
+        biblio_file.write('{}\n'.format(item))
+with open(os.path.join("./pdf-retro-bib", "articles.bib"), 'w', encoding='utf-8') as biblio_file:
+    for item in article_ls:
+        biblio_file.write('{}\n'.format(item))
