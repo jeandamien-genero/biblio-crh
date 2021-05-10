@@ -66,6 +66,7 @@ class Document(File):
 
 # subprocess.call(["mkdir", "./annual-bibliography"])
 reference = Document('./publications_retrospectives.csv')
+chapitre_ls = []
 article_ls = []
 book_ls = []
 inproceedings_ls = []
@@ -151,6 +152,105 @@ for ID, Name1, Name2, Firstname, Signatures, CoCRH, CoEXT, Type, Title, Journal,
     keywords = {{reedition-crh, crh-{Date}}}
 }}"""
         book_ls.append(new_ed)
+    elif Type == "contribution dans un livre collectif":
+        art_in_collectif = f"""@incollection{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    editor = {{{Editor}}},
+    title = {{{Title}}},
+    booktitle = {{{Booktitle}}},
+    publisher = {{{Publisher}}},
+    location = {{{Location}}},
+    year = {Date},
+    pagetotal = {{{Pages}}},
+    language = {{{Language}}},
+    keywords = {{chap, collectif-crh, crh-{Date}}}
+}}"""
+        chapitre_ls.append(art_in_collectif)
+    elif Type == "article dans des actes de colloque":
+        inproceedings = f"""@inproceedings{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    editor = {{{Editor}}},
+    title = {{{Title}}},
+    booktitle = {{{Booktitle}}},
+    publisher = {{{Publisher}}},
+    location = {{{Location}}},
+    year = {Date},
+    pagetotal = {{{Pages}}},
+    language = {{{Language}}},
+    keywords = {{chap, chapitre, crh-{Date}}}
+}}"""
+        chapitre_ls.append(inproceedings)
+    elif Type == "introduction":  # introduction, présentation, conclusion
+        if Journal == "" and Booktitle != "" and Preface == "":
+            intro_book = f"""@incollection{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    editor = {{{Editor}}},
+    title = {{{Title}}},
+    booktitle = {{{Booktitle}}},
+    publisher = {{{Publisher}}},
+    location = {{{Location}}},
+    year = {Date},
+    pagetotal = {{{Pages}}},
+    language = {{{Language}}},
+    keywords = {{chap, intro-book-crh, crh-{Date}}}
+}}"""
+            chapitre_ls.append(intro_book)
+        elif Journal == "" and Booktitle == "" and Preface != "":
+            intro_preface = f"""@incollection{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    editor = {{{Editor}}},
+    title = {{{Title}}},
+    booktitle = {{{Preface}}},
+    publisher = {{{Publisher}}},
+    location = {{{Location}}},
+    year = {Date},
+    pagetotal = {{{Pages}}},
+    language = {{{Language}}},
+    keywords = {{chap, intro-preface-crh, crh-{Date}}}
+}}"""
+            chapitre_ls.append(intro_preface)
+        elif Journal != "" and Booktitle == "" and Preface == "":
+            intro_journal = f"""@article{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    title = {{{Title}}},
+    journal = {{{Journal}}},
+    year = {Date},
+    language = {{{Language}}},
+    keywords = {{intro-journal-crh, crh-{Date}}}
+}}"""
+            intro_journal_ls.append(intro_journal)
+        else:
+            # print("error for {}.\nJournal = +{}+\nBooktitle = +{}+\nPreface = +{}+\n\n".format(ID, Journal, Booktitle, Preface))
+            intro_journal = f"""@article{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    title = {{{Title}}},
+    journal = {{{Journal}}},
+    issuetitle = {{{Preface}}},
+    year = {Date},
+    language = {{{Language}}},
+    keywords = {{intro-journal-crh, crh-{Date}}}
+}}"""
+            intro_journal_ls.append(intro_journal)
+    elif Type == "contribution dans des Mélanges":
+        melanges = f"""@incollection{{{Name1}{ID}-{Date},
+    author = {{{authors}}},
+    editor = {{{Editor}}},
+    title = {{{Title}}},
+    booktitle = {{{Booktitle}}},
+    publisher = {{{Publisher}}},
+    location = {{{Location}}},
+    year = {Date},
+    pagetotal = {{{Pages}}},
+    language = {{{Language}}},
+    keywords = {{chap, melanges-crh, crh-{Date}}}
+}}"""
+        # addendum = {{{Dedicataire}}},
+        chapitre_ls.append(melanges)
+
 with open(os.path.join("./pdf-retro-bib", "monographies.bib"), 'w', encoding='utf-8') as biblio_file:
     for item in book_ls:
         biblio_file.write('{}\n'.format(item))
+with open(os.path.join("./pdf-retro-bib", "chapitres.bib"), 'w', encoding='utf-8') as biblio_file:
+    for item in chapitre_ls:
+        biblio_file.write('{}\n'.format(item))
+# recup intro_journal_ls.append(intro_journal) et autre
